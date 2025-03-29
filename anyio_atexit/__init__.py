@@ -1,3 +1,3 @@
-from .callback import run_finally
+from .callback import ensure_resource_closure, run_finally
 
-__all__ = ["run_finally"]
+__all__ = ["ensure_resource_closure", "run_finally"]

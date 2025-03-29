@@ -1,7 +1,13 @@
+import functools
+
 import pytest
-from anyio import AsyncResource, sleep
+from anyio import run, sleep
+from anyio.abc import AsyncResource
+from anyio.to_thread import run_sync
 
 from anyio_atexit import run_finally
+
+was_closed = False
 
 
 class Foo(AsyncResource):
@@ -19,14 +25,28 @@ class Foo(AsyncResource):
 
         self._closed = True
         await sleep(0.1)
-        print(f"done {self.id}")
+        global was_closed
+        was_closed = True
+
+
+async def explicit():
+    async with Foo("a") as f:
+        await sleep(0.1)
+    assert f.is_closed()
+
+
+async def implicit():
+    f = Foo("a")
+    await sleep(0.1)
+    assert not f.is_closed()
 
 
 @pytest.mark.anyio
-async def test_run_finally():
-    f = Foo("a")
-    await sleep(0.1)
-    # await f.aclose()
-
-    async with Foo("b"):
-        await sleep(0.1)
+@pytest.mark.parametrize("fn", [explicit, implicit])
+async def test_run_finally(fn, anyio_backend):
+    await run_sync(
+        functools.partial(
+            run, fn, backend=anyio_backend[0], backend_options=anyio_backend[1]
+        )
+    )
+    assert was_closed

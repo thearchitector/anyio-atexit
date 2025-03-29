@@ -1,0 +1,34 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.3
+    hooks:
+      - id: ruff
+        args:
+          - --fix
+          - --exit-non-zero-on-fix
+      - id: ruff-format
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        language: system
+        entry: .venv/bin/python -m mypy
+        types: [python]
+        exclude: ^tests
+        require_serial: true
+  - repo: https://github.com/adamtheturtle/doccmd-pre-commit
+    rev: v2025.1.11
+    hooks:
+      - id: doccmd
+        files: "README.md"
+        args:
+          ["--language", "python", "--no-pad-file", "--command", "ruff format"]
+        additional_dependencies: ["ruff"]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-yaml
+        args:
+          - --allow-multiple-documents
+      - id: end-of-file-fixer
+      - id: trailing-whitespace

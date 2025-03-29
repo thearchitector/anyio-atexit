@@ -1,0 +1,77 @@
+[project]
+name = "anyio-atexit"
+version = "1.0.0"
+description = "Small AnyIO utility for ensuring some task runs before the current async context finishes."
+authors = [
+    {name = "Elias Gabriel", email = "oss@eliasfgabriel.com"},
+]
+dependencies = ["sniffio>=1.1"]
+requires-python = ">=3.8"
+readme = "README.md"
+license = "BSD-3-Clause-Clear"
+license-files = ["LICENSE"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Framework :: AnyIO",
+    "Framework :: Asyncio",
+    "Framework :: Trio",
+    "Typing :: Typed",
+    "Topic :: Utilities",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+[project.urls]
+homepage = "https://github.com/thearchitector/anyio-atexit"
+source = "https://github.com/thearchitector/anyio-atexit"
+changelog = "https://github.com/thearchitector/anyio-atexit/releases"
+issues = "https://github.com/thearchitector/anyio-atexit/issues"
+
+[project.optional-dependencies]
+trio = [
+    "trio>=0.23.0",
+]
+asyncio = [
+    "asyncio-atexit>=1.0.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "uvloop>=0.21.0",
+    "anyio>=4.0.0; python_version >= '3.9'",
+    "anyio>=4.0.0; python_version ~= '3.8.0'",
+]
+lint = [
+    "mypy>=1.14.1",
+]
+
+[tool.pytest.ini_options]
+addopts = '-ra -vv'
+testpaths = ["tests"]
+
+[tool.mypy]
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["asyncio_atexit.*"]
+follow_untyped_imports = true
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+extend-select = ["B", "I"]
+
+[tool.pdm]
+distribution = true
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
