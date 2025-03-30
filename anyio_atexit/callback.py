@@ -27,20 +27,20 @@ def run_finally(
     """
     t: "Callable[[], Awaitable[None]]" = partial(task, *args, **kwargs)
 
-    match sniffio.current_async_library():
-        case "trio":
-            import trio
+    framework = sniffio.current_async_library()
+    if framework == "trio":
+        import trio
 
-            trio.lowlevel.spawn_system_task(_trio_finalize, t)
-        case "asyncio":
-            try:
-                import asyncio_atexit
-            except ImportError:
-                raise RuntimeError("'asyncio-atexit' not installed.") from None
+        trio.lowlevel.spawn_system_task(_trio_finalize, t)
+    elif framework == "asyncio":
+        try:
+            import asyncio_atexit
+        except ImportError:
+            raise RuntimeError("'asyncio-atexit' not installed.") from None
 
-            asyncio_atexit.register(t)  # type: ignore[no-untyped-call]
-        case _:
-            warn("Unsupported async framework for finalizer task.", stacklevel=1)
+        asyncio_atexit.register(t)  # type: ignore[no-untyped-call]
+    else:
+        warn("Unsupported async framework for finalizer task.", stacklevel=1)
 
 
 async def _trio_finalize(task: "Callable[[], Awaitable[None]]") -> None:
