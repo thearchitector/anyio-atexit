@@ -14,7 +14,7 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Framework :: AnyIO",
-    "Framework :: Asyncio",
+    "Framework :: AsyncIO",
     "Framework :: Trio",
     "Typing :: Typed",
     "Topic :: Utilities",
