@@ -11,7 +11,7 @@ import pytest
             id="uvloop",
             marks=[
                 pytest.mark.skipif(
-                    sys.platform == "win32", reason="uvloop not available"
+                    sys.platform == "win32", reason="uvloop not available on windows"
                 ),
             ],
         ),

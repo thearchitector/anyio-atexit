@@ -5,7 +5,7 @@ from anyio import run, sleep
 from anyio.abc import AsyncResource
 from anyio.to_thread import run_sync
 
-from anyio_atexit import run_finally
+from anyio_atexit.callback import run_finally
 
 was_closed = False
 
@@ -44,9 +44,13 @@ async def implicit():
 @pytest.mark.anyio
 @pytest.mark.parametrize("fn", [explicit, implicit])
 async def test_run_finally(fn, anyio_backend):
+    global was_closed
+    was_closed = False
+
     await run_sync(
         functools.partial(
             run, fn, backend=anyio_backend[0], backend_options=anyio_backend[1]
         )
     )
+
     assert was_closed
